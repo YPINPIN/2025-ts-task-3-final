@@ -23,7 +23,7 @@ import ProductModal from '@/components/ProductModal.vue'
 // TODO: 匯入型別定義
 // 提示：從 @/types/product 匯入 Pagination, ProductData
 import type { ProductData, Pagination } from '@/types/product'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
 
 // TODO: 為模板引用加上型別註解
 // 提示：使用 useTemplateRef<InstanceType<typeof ProductModal>>()
@@ -56,6 +56,10 @@ const getProducts = async () => {
 
     products.value = res.data.products
     pagination.value = res.data.pagination
+    const pageStr = pagination.value.current_page.toString()
+    if (currentPage.value !== pageStr) {
+      currentPage.value = pageStr
+    }
   } catch (error) {
     alert('取得產品列表失敗')
     console.log(error)
@@ -116,6 +120,10 @@ const handleDeleteProduct = async (productId: string): Promise<void> => {
     getProducts()
   }
 }
+
+watch(currentPage, () => {
+  getProducts()
+})
 </script>
 
 <template>
