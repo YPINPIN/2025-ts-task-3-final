@@ -117,13 +117,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="col-6">
-            <button
-              @click="handleAddCartItem"
-              type="button"
-              class="text-nowrap btn btn-dark w-100 py-2"
-            >
-              加入購物車
-            </button>
+            <button type="button" class="text-nowrap btn btn-dark w-100 py-2">加入購物車</button>
           </div>
         </div>
       </div>
