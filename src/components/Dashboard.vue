@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="d-flex">
+  <div class="dashboard d-flex">
     <Sidebar />
 
     <div class="main-content d-flex flex-column">

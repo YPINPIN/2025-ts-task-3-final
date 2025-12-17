@@ -111,6 +111,18 @@ export type GetProductsResponse = {
   messages: unknown[]
 }
 
+// 定義一次取得所有商品回應型別
+export type GetAllProductsResponse = {
+  success: boolean
+  products: ProductData[]
+}
+
+// 定義取得單一商品回應型別
+export type GetProductDetailResponse = {
+  success: boolean
+  product: ProductData
+}
+
 // TODO: 定義訊息回應基本型別
 // 提示：包含 success (布林值) 和 message (字串)
 type MessageResponse = {

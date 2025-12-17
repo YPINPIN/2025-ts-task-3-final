@@ -21,6 +21,8 @@ import type {
   EditProductResponse,
   DeleteProductResponse,
   UploadImageResponse,
+  GetAllProductsResponse,
+  GetProductDetailResponse,
 } from '@/types/product'
 import axios, { type AxiosResponse } from 'axios'
 
@@ -107,3 +109,23 @@ export const apiDeleteProduct = (
 // - 這是一個 async 函式
 export const apiUploadImage = async (file: FormData): Promise<AxiosResponse<UploadImageResponse>> =>
   productApi.post(`/v2/api/${API_PATH}/admin/upload`, file)
+
+// ==========================================
+// 客戶端 API
+// ==========================================
+
+export const apiClientGetProducts = (params: {
+  page?: string
+  category?: string
+}): Promise<AxiosResponse<GetProductsResponse>> =>
+  productApi.get(`/v2/api/${API_PATH}/products`, {
+    params,
+  })
+
+export const apiClientGetAllProducts = (): Promise<AxiosResponse<GetAllProductsResponse>> =>
+  productApi.get(`/v2/api/${API_PATH}/products/all`)
+
+export const apiClientGetProductDetail = (
+  productId: string,
+): Promise<AxiosResponse<GetProductDetailResponse>> =>
+  productApi.get(`/v2/api/${API_PATH}/product/${productId}`)
