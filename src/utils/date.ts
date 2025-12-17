@@ -13,3 +13,11 @@ export const formatDate = (timestamps: number) => {
 
   return formattedDate
 }
+
+export const formatCouponDate = (timestamps: number): string => {
+  return new Date(timestamps * 1000).toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+}
