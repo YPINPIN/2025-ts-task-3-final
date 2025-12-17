@@ -1,4 +1,4 @@
-import Dashboard from '@/components/Dashboard.vue'
+import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
@@ -6,21 +6,26 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
+      component: HomeView,
+    },
+    {
+      path: '/admin',
       name: 'dashboard',
-      component: Dashboard,
+      component: () => import('@/components/Dashboard.vue'),
       children: [
         {
-          path: '/product-management',
+          path: 'product-management',
           name: 'product-management',
           component: () => import('@/views/ProductManagement.vue'),
         },
         {
-          path: '/order-management',
+          path: 'order-management',
           name: 'order-management',
           component: () => import('@/views/OrderManagement.vue'),
         },
         {
-          path: '/coupon-management',
+          path: 'coupon-management',
           name: 'coupon-management',
           component: () => import('@/views/CouponManagement.vue'),
         },

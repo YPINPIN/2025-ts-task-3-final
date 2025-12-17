@@ -22,9 +22,10 @@ const handleLogin = async () => {
 
     const { token, expired } = res.data
     document.cookie = `hexToken=${token};expires=${new Date(expired)};`
-    router.push('/product-management')
+    router.push('/admin/product-management')
   } catch (error) {
     alert('登入失敗')
+    console.log(error)
   } finally {
     isProcessLogin.value = false
   }
