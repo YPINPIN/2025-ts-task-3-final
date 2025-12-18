@@ -15,6 +15,9 @@ import { Autoplay } from 'swiper/modules'
 // import Swiper styles
 import 'swiper/css'
 
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore()
+
 const route = useRoute()
 const router = useRouter()
 
@@ -54,6 +57,13 @@ const getCategoryProducts = async (category: string) => {
     alert('取得推薦產品失敗')
     console.log(error)
   }
+}
+
+const handleAddCartItem = async () => {
+  cartStore.addCartItem({
+    product_id: productId.value,
+    qty: productNum.value,
+  })
 }
 
 // 監聽 productId 變化，取得產品詳細資訊
@@ -181,7 +191,13 @@ watch(recommendProducts, async () => {
             </div>
           </div>
           <div class="col-6">
-            <button type="button" class="text-nowrap btn btn-dark w-100 py-2">加入購物車</button>
+            <button
+              @click="handleAddCartItem"
+              type="button"
+              class="text-nowrap btn btn-dark w-100 py-2"
+            >
+              加入購物車
+            </button>
           </div>
         </div>
       </div>
@@ -226,7 +242,6 @@ watch(recommendProducts, async () => {
                     </del></span
                   >
                 </p>
-                <p class="text-muted mt-3"></p>
               </div>
             </div>
           </div>

@@ -22,6 +22,12 @@ const router = createRouter({
       meta: { title: '產品詳細' },
     },
     {
+      path: '/cart',
+      name: 'cart',
+      component: () => import('@/views/CartView.vue'),
+      meta: { title: '購物車' },
+    },
+    {
       path: '/admin',
       name: 'dashboard',
       component: () => import('@/components/Dashboard.vue'),
