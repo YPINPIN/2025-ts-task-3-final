@@ -20,6 +20,10 @@ const router = useRouter()
 
 const productId = computed<string>(() => route.params.id as string)
 const product = ref<ProductData | null>(null)
+
+const allImages = computed(() => {
+  return [product.value?.imageUrl, ...(product.value?.imagesUrl?.filter(Boolean) || [])]
+})
 const productNum = ref<number>(1)
 
 const recommendProducts = ref<ProductData[]>([])
@@ -105,15 +109,17 @@ watch(recommendProducts, async () => {
         </nav>
         <div id="carouselExample" class="carousel slide">
           <div class="carousel-container carousel-inner">
-            <div class="carousel-item active">
-              <img :src="product?.imageUrl" class="d-block w-100 object-fit-cover" alt="主圖" />
-            </div>
             <div
-              v-for="image in product?.imagesUrl?.filter(Boolean)"
+              v-for="(image, index) in allImages"
               :key="image"
               class="carousel-item"
+              :class="{ active: index === 0 }"
             >
-              <img :src="image" class="d-block w-100 object-fit-cover" alt="副圖" />
+              <img
+                :src="image"
+                class="d-block w-100 object-fit-cover"
+                :alt="`商品圖${index + 1}`"
+              />
             </div>
           </div>
           <button
