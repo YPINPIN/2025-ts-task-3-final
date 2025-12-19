@@ -6,6 +6,7 @@ import type {
   CreateOrderParams,
   CreateOrderResponse,
   PayOrderResponse,
+  GetOrderByIdResponse,
 } from '@/types/order'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -58,3 +59,8 @@ export const apiClientCreateOrder = (
 
 export const apiClientPayOrder = (orderId: string): Promise<AxiosResponse<PayOrderResponse>> =>
   orderApi.post(`/v2/api/${API_PATH}/pay/${orderId}`)
+
+export const apiClientGetOrderById = (
+  orderId: string,
+): Promise<AxiosResponse<GetOrderByIdResponse>> =>
+  orderApi.get(`/v2/api/${API_PATH}/order/${orderId}`)

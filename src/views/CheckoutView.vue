@@ -14,6 +14,10 @@ const router = useRouter()
 const cartStore = useCartStore()
 const { cart } = storeToRefs(cartStore)
 
+if (cart.value.carts.length === 0) {
+  router.push('/cart')
+}
+
 const submitBtn = useTemplateRef<HTMLButtonElement>('submitBtn')
 
 type FormData = CreateOrderParams['user'] & {
@@ -31,9 +35,8 @@ const form = ref<FormData>({
 const orderId = ref<string | null>(null)
 
 const step = ref<1 | 2>(1) // 定義只有 1 或 2
-const isSubmitted = ref(false) // 是否已經嘗試送出表單，用於觸發驗證訊息顯示
-const isSubmitting = ref(false)
-const isProcessingPayment = ref(false)
+const isSubmitting = ref<boolean>(false)
+const isProcessingPayment = ref<boolean>(false)
 
 const isEmailValid = computed(() => {
   const emailPattern = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
@@ -55,25 +58,17 @@ const isAddressValid = computed(() => {
 
 const handleNextStep = () => {
   if (orderId.value) {
-    // 已經建立過訂單，直接進入下一步
+    // 已經建立過訂單，直接進入選擇結帳方式
     step.value = 2
     return
   }
 
-  submitForm()
-}
-
-const submitForm = () => {
-  // 觸發表單驗證顯示
-  isSubmitted.value = true
-  // 觸發隱藏的提交按鈕點擊事件
   submitBtn.value?.click()
 }
 
 // 建立訂單
 const handleSubmitOrder = async () => {
   try {
-    console.log('handleSubmitOrder')
     isSubmitting.value = true
 
     const { message, ...user } = form.value
@@ -113,16 +108,19 @@ const handleProcessPayment = async () => {
 
 <template>
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-10">
-        <AppNavbar />
-      </div>
-    </div>
+    <AppNavbar />
     <template v-if="cart?.carts && cart?.carts.length > 0">
       <div class="row justify-content-center">
         <div class="col-md-10">
-          <h3 v-if="step === 1" class="fw-bold mb-4 pt-3">輸入結帳資訊</h3>
-          <h3 v-else class="fw-bold mb-4 pt-3">選擇付款方式</h3>
+          <div v-if="step === 1 && orderId">
+            <h3 class="fw-bold mb-2 pt-3">訂單已成立</h3>
+            <p class="fw-bold mb-2 text-success">訂單編號：{{ orderId }}</p>
+          </div>
+          <h3 v-else-if="step === 1" class="fw-bold mb-4 pt-3">輸入結帳資訊</h3>
+          <div v-else-if="step === 2 && orderId">
+            <h3 class="fw-bold mb-2 pt-3">選擇付款方式</h3>
+            <p class="fw-bold mb-2 text-success">訂單編號：{{ orderId }}</p>
+          </div>
         </div>
       </div>
       <div class="row flex-row-reverse justify-content-center pb-5">
@@ -176,8 +174,9 @@ const handleProcessPayment = async () => {
                 class="form-control"
                 id="email"
                 placeholder="example@gmail.com"
+                :disabled="orderId ? true : false"
               />
-              <span v-if="!isEmailValid && isSubmitted" class="text-danger small mt-1">
+              <span v-if="!isEmailValid" class="text-danger small mt-1">
                 請輸入正確的電子信箱
               </span>
             </div>
@@ -190,10 +189,9 @@ const handleProcessPayment = async () => {
                 class="form-control"
                 id="name"
                 placeholder="王漂亮"
+                :disabled="orderId ? true : false"
               />
-              <span v-if="!isNameValid && isSubmitted" class="text-danger small mt-1">
-                請輸入姓名
-              </span>
+              <span v-if="!isNameValid" class="text-danger small mt-1"> 請輸入姓名 </span>
             </div>
             <div class="mb-2">
               <label for="tel" class="text-muted mb-0">手機</label>
@@ -204,8 +202,9 @@ const handleProcessPayment = async () => {
                 class="form-control"
                 id="tel"
                 placeholder="0912345678"
+                :disabled="orderId ? true : false"
               />
-              <span v-if="!isPhoneValid && isSubmitted" class="text-danger small mt-1">
+              <span v-if="!isPhoneValid" class="text-danger small mt-1">
                 請輸入正確的手機號碼
               </span>
             </div>
@@ -218,10 +217,9 @@ const handleProcessPayment = async () => {
                 class="form-control"
                 id="address"
                 placeholder="高雄市新興區"
+                :disabled="orderId ? true : false"
               />
-              <span v-if="!isAddressValid && isSubmitted" class="text-danger small mt-1">
-                請輸入正確的地址
-              </span>
+              <span v-if="!isAddressValid" class="text-danger small mt-1"> 請輸入正確的地址 </span>
             </div>
             <div class="mb-2">
               <label for="message" class="text-muted mb-0">留言</label>
@@ -230,7 +228,7 @@ const handleProcessPayment = async () => {
                 class="form-control"
                 rows="3"
                 id="message"
-                placeholder="六角學院，只要你不放棄，我們就不放棄你 ... "
+                :disabled="orderId ? true : false"
               ></textarea>
             </div>
             <button ref="submitBtn" type="submit" class="d-none"></button>
@@ -255,7 +253,7 @@ const handleProcessPayment = async () => {
                 type="button"
                 class="btn btn-dark py-3 px-7"
               >
-                下一步
+                {{ orderId ? '選擇付款方式' : '送出訂單' }}
               </button>
             </template>
             <template v-else>

@@ -53,3 +53,8 @@ export type PayOrderResponse = {
   success: boolean
   message: string
 }
+
+export type GetOrderByIdResponse = {
+  success: boolean
+  order: Order
+}

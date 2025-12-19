@@ -38,6 +38,7 @@ onMounted(() => {
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <RouterLink class="nav-item nav-link me-4" to="/products">產品列表</RouterLink>
+        <RouterLink class="nav-item nav-link me-4" to="/order">訂單查詢</RouterLink>
         <RouterLink class="d-md-none nav-item nav-link" to="/cart">購物車</RouterLink>
         <RouterLink class="d-none d-md-block nav-item nav-link" to="/cart">
           <div className="position-relative">

@@ -40,6 +40,12 @@ const router = createRouter({
       meta: { title: '結帳完成' },
     },
     {
+      path: '/order',
+      name: 'order',
+      component: () => import('@/views/OrderView.vue'),
+      meta: { title: '訂單查詢' },
+    },
+    {
       path: '/admin',
       name: 'dashboard',
       component: () => import('@/components/Dashboard.vue'),
