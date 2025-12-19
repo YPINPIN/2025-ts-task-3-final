@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import type { GetOrdersResponse } from '@/types/order'
+import type { Order } from '@/types/order'
+
 import { Modal } from 'bootstrap'
 import { onMounted, onUnmounted, useTemplateRef } from 'vue'
 
 interface OrderDetailModalProps {
-  order: GetOrdersResponse['orders'][number]
+  order: Order
 }
 
-const props = defineProps<OrderDetailModalProps>()
+const { order } = defineProps<OrderDetailModalProps>()
 
-const modalRef = useTemplateRef('modalRef')
+const modalRef = useTemplateRef<HTMLDivElement>('modalRef')
 let modal: Modal | null = null
 
 onMounted(() => {
@@ -64,29 +65,29 @@ defineExpose({
         </div>
         <div class="modal-body">
           <p>
-            <strong>訂單編號:</strong> <span id="modalOrderNumber">{{ props.order.id }}</span>
+            <strong>訂單編號:</strong> <span id="modalOrderNumber">{{ order.id }}</span>
           </p>
           <p>
             <strong>日期:</strong>
             <span id="modalOrderDate">{{
-              new Date(props.order.create_at * 1000).toLocaleDateString()
+              new Date(order.create_at * 1000).toLocaleDateString()
             }}</span>
           </p>
           <p>
             <strong>客戶名稱:</strong>
-            <span id="modalCustomerName">{{ props.order.user.name }}</span>
+            <span id="modalCustomerName">{{ order.user.name }}</span>
           </p>
           <p>
             <strong>地址:</strong>
-            <span id="modalShippingAddress">{{ props.order.user.address }}</span>
+            <span id="modalShippingAddress">{{ order.user.address }}</span>
           </p>
           <p>
             <strong>Email:</strong>
-            <span id="modalCustomerEmail">{{ props.order.user.email }}</span>
+            <span id="modalCustomerEmail">{{ order.user.email }}</span>
           </p>
           <p>
             <strong>聯絡電話:</strong>
-            <span id="modalCustomerPhone">{{ props.order.user.tel }}</span>
+            <span id="modalCustomerPhone">{{ order.user.tel }}</span>
           </p>
           <hr />
           <h6>訂購商品</h6>
@@ -99,7 +100,7 @@ defineExpose({
               </tr>
             </thead>
             <tbody>
-              <tr v-for="productObj in props.order.products" :key="productObj.id">
+              <tr v-for="productObj in order.products" :key="productObj.id">
                 <td>{{ productObj.product.title }}</td>
                 <td>{{ productObj.qty }}</td>
                 <td>{{ productObj.final_total.toLocaleString('zh-TW') }}</td>
@@ -110,7 +111,7 @@ defineExpose({
           <p class="h5 text-end">
             <strong>總金額:</strong>
             <span id="modalOrderAmount" class="text-danger">{{
-              props.order.total.toLocaleString('zh-TW')
+              order.total.toLocaleString('zh-TW')
             }}</span>
             元
           </p>

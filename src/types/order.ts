@@ -1,3 +1,5 @@
+import type { CartData } from './cart'
+
 export type Order = {
   create_at: number
   id: string
@@ -5,26 +7,7 @@ export type Order = {
   message?: string
   paid_date?: number
   products: {
-    [key: string]: {
-      final_total: number
-      id: string
-      product_id: string
-      qty: number
-      total: number
-      product: {
-        category: string
-        content: string
-        description: string
-        id: string
-        imageUrl: string
-        imagesUrl: string[]
-        is_enabled: number
-        origin_price: number
-        price: number
-        title: string
-        unit: string
-      }
-    }
+    [key: string]: CartData
   }
   total: number
   user: {
@@ -47,17 +30,26 @@ export type Pagination = {
 export type GetOrdersResponse = {
   success: boolean
   orders: Order[]
-  pagination: {
-    total_pages: number
-    current_page: number
-    has_pre: boolean
-    has_next: boolean
-    category: string
-  }
+  pagination: Pagination
   messages: unknown[]
 }
 
 export type DeleteOrderResponse = {
+  success: boolean
+  message: string
+}
+
+export type CreateOrderParams = Pick<Order, 'user' | 'message'>
+
+export type CreateOrderResponse = {
+  success: boolean
+  message: string
+  total: number
+  create_at: number
+  orderId: string
+}
+
+export type PayOrderResponse = {
   success: boolean
   message: string
 }

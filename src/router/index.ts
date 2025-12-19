@@ -28,6 +28,18 @@ const router = createRouter({
       meta: { title: '購物車' },
     },
     {
+      path: '/checkout',
+      name: 'checkout',
+      component: () => import('@/views/CheckoutView.vue'),
+      meta: { title: '結帳' },
+    },
+    {
+      path: '/checkout-success',
+      name: 'checkout-success',
+      component: () => import('@/views/CheckoutSuccessView.vue'),
+      meta: { title: '結帳完成' },
+    },
+    {
       path: '/admin',
       name: 'dashboard',
       component: () => import('@/components/Dashboard.vue'),

@@ -8,7 +8,7 @@ export type CartData = {
   qty: number
   total: number
   final_total: number
-  coupon: CouponData
+  coupon?: CouponData
 }
 
 export type CartInfo = {

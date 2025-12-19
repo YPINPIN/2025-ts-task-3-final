@@ -3,10 +3,11 @@ import { apiDeleteOrder, apiGetOrders } from '@/api/order'
 import DeleteModal from '@/components/DeleteModal.vue'
 import OrderDetailModal from '@/components/OrderDetailModal.vue'
 import type { Order, Pagination } from '@/types/order'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
 
-const orderDetailModalRef = useTemplateRef('orderDetailModalRef')
-const deleteModalRef = useTemplateRef('deleteModalRef')
+const orderDetailModalRef =
+  useTemplateRef<InstanceType<typeof OrderDetailModal>>('orderDetailModalRef')
+const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteModal>>('deleteModalRef')
 
 const tempOrder = ref<Order>({
   create_at: 0,
@@ -24,7 +25,7 @@ const tempOrder = ref<Order>({
   num: 0,
 })
 
-const currentPage = ref('1')
+const currentPage = ref<string>('1')
 
 const orders = ref<Order[]>([])
 
@@ -44,8 +45,13 @@ const getOrders = async () => {
 
     orders.value = res.data.orders
     pagination.value = res.data.pagination
+    const pageStr = pagination.value.current_page.toString()
+    if (currentPage.value !== pageStr) {
+      currentPage.value = pageStr
+    }
   } catch (error) {
     alert('取得訂單列表失敗')
+    console.log(error)
   }
 }
 onMounted(() => {
@@ -66,10 +72,15 @@ const deleteOrder = async (orderId: string) => {
     await apiDeleteOrder(orderId)
   } catch (error) {
     alert('刪除訂單失敗')
+    console.log(error)
   } finally {
     getOrders()
   }
 }
+
+watch(currentPage, () => {
+  getOrders()
+})
 </script>
 
 <template>
@@ -135,7 +146,7 @@ const deleteOrder = async (orderId: string) => {
               <span aria-hidden="true">&laquo;</span>
             </button>
           </li>
-          <li v-for="pageNum in pagination?.total_pages" class="page-item">
+          <li v-for="pageNum in pagination?.total_pages" :key="pageNum" class="page-item">
             <button
               @click="currentPage = pageNum.toString()"
               :disabled="currentPage === pageNum.toString()"

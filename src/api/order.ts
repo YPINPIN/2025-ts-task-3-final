@@ -1,6 +1,12 @@
 import axios, { type AxiosResponse } from 'axios'
 
-import type { DeleteOrderResponse, GetOrdersResponse } from '@/types/order'
+import type {
+  DeleteOrderResponse,
+  GetOrdersResponse,
+  CreateOrderParams,
+  CreateOrderResponse,
+  PayOrderResponse,
+} from '@/types/order'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
 const API_PATH = import.meta.env.VITE_API_PATH
@@ -40,3 +46,15 @@ export const apiGetOrders = (params: {
 
 export const apiDeleteOrder = (orderId: string): Promise<AxiosResponse<DeleteOrderResponse>> =>
   orderApi.delete(`/v2/api/${API_PATH}/admin/order/${orderId}`)
+
+// ==========================================
+// 客戶端 API
+// ==========================================
+
+export const apiClientCreateOrder = (
+  params: CreateOrderParams,
+): Promise<AxiosResponse<CreateOrderResponse>> =>
+  orderApi.post(`/v2/api/${API_PATH}/order`, { data: params })
+
+export const apiClientPayOrder = (orderId: string): Promise<AxiosResponse<PayOrderResponse>> =>
+  orderApi.post(`/v2/api/${API_PATH}/pay/${orderId}`)
