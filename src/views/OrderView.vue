@@ -11,7 +11,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const step = ref<1 | 2>(1) // 定義只有 1 或 2
-const orderId = ref<string>('')
+const searchOrderId = ref<string>('')
 
 const isSearching = ref<boolean>(false)
 const isProcessingPayment = ref<boolean>(false)
@@ -19,20 +19,22 @@ const isProcessingPayment = ref<boolean>(false)
 const order = ref<Order | null>(null)
 
 const handleOrderSearch = async () => {
-  if (!orderId.value) return
+  if (!searchOrderId.value) return
 
   try {
     step.value = 1
     isSearching.value = true
-    const res = await apiClientGetOrderById(orderId.value)
+    const res = await apiClientGetOrderById(searchOrderId.value)
 
     if (res.data.order) {
       order.value = res.data.order
     } else {
       alert('查無訂單資料')
+      order.value = null
     }
   } catch (error) {
     alert('查無訂單資料')
+    order.value = null
     console.log(error)
   } finally {
     isSearching.value = false
@@ -40,11 +42,11 @@ const handleOrderSearch = async () => {
 }
 
 const handleProcessPayment = async () => {
-  if (!orderId.value) return
+  if (!order.value?.id) return
 
   try {
     isProcessingPayment.value = true
-    await apiClientPayOrder(orderId.value)
+    await apiClientPayOrder(order.value.id)
     router.push('/checkout-success')
   } catch (error) {
     alert('付款失敗')
@@ -86,7 +88,7 @@ const handleProcessPayment = async () => {
       <div class="d-flex mb-4 justify-content-between align-items-center">
         <div class="input-group w-100 w-md-50">
           <input
-            v-model.trim="orderId"
+            v-model.trim="searchOrderId"
             type="text"
             class="form-control rounded-0 border-bottom border-top-0 border-start-0 border-end-0 shadow-none"
             placeholder="請輸入訂單編號"
