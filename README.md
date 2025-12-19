@@ -22,9 +22,16 @@
 
 ```
 src/
-├── types/          # 型別定義檔案
-├── api/           # API 請求函式
-├── composable/    # Vue 組合式 API
-├── components/    # Vue 組件
-└── views/         # 頁面組件
+├── api/               # 與後端溝通的 API 函式
+├── assets/            # 靜態資源（images、styles、fonts）
+│   ├── images/
+│   └── styles/
+├── components/        # 可重用 Vue 組件（Header、Footer、Modal 等）
+├── composable/        # Vue 組合式函式（useXxx）
+├── types/             # TypeScript 型別定義
+├── router/            # Vue Router 路由設定
+├── stores/            # Pinia/Vuex 等狀態管理
+├── utils/             # 共用工具函式（日期）
+├── views/             # 頁面元件（對應路由）
+└── constants.ts       # 後台側邊欄常數
 ```
