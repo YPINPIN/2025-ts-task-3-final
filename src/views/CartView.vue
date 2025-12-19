@@ -2,6 +2,8 @@
 import AppFooter from '@/components/AppFooter.vue'
 import AppNavbar from '@/components/AppNavbar.vue'
 
+import DeleteModal from '@/components/DeleteModal.vue'
+
 import { apiClientGetProducts } from '@/api/products'
 import type { CartData, EditCartParams } from '@/types/cart'
 import type { ProductData } from '@/types/product'
@@ -21,6 +23,8 @@ const cartStore = useCartStore()
 const { cart, isUpdating, isApplyingCoupon } = storeToRefs(cartStore)
 
 const couponCode = ref('')
+
+const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteModal>>('deleteModalRef')
 
 const recommendProducts = ref<ProductData[]>([])
 const swiperContainer = useTemplateRef<HTMLElement>('swiperContainer')
@@ -53,6 +57,12 @@ const handleApplyCoupon = async () => {
 
   await cartStore.applyCoupon(couponCode.value)
   couponCode.value = ''
+}
+
+const openDeleteModal = () => {
+  deleteModalRef.value?.openModal(() => {
+    cartStore.deleteAllCart()
+  })
 }
 
 // 取得推薦產品
@@ -191,24 +201,29 @@ watch(recommendProducts, async () => {
               </tr>
             </tbody>
           </table>
-          <div class="input-group w-50 mb-3">
-            <input
-              v-model.trim="couponCode"
-              type="text"
-              class="form-control rounded-0 border-bottom border-top-0 border-start-0 border-end-0 shadow-none"
-              placeholder="折扣碼"
-            />
-            <div class="input-group-append">
-              <button
-                @click="handleApplyCoupon"
-                :disabled="isApplyingCoupon"
-                class="btn btn-outline-dark border-bottom border-top-0 border-start-0 border-end-0 rounded-0"
-                type="button"
-                id="button-addon2"
-              >
-                <i class="fas fa-paper-plane"></i>
-              </button>
+          <div class="d-flex mb-3 justify-content-between align-items-center">
+            <div class="input-group w-50">
+              <input
+                v-model.trim="couponCode"
+                type="text"
+                class="form-control rounded-0 border-bottom border-top-0 border-start-0 border-end-0 shadow-none"
+                placeholder="折扣碼"
+              />
+              <div class="input-group-append">
+                <button
+                  @click="handleApplyCoupon"
+                  :disabled="isApplyingCoupon"
+                  class="btn btn-outline-dark border-bottom border-top-0 border-start-0 border-end-0 rounded-0"
+                  type="button"
+                  id="button-addon2"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
             </div>
+            <button @click="openDeleteModal()" type="button" class="btn btn-outline-danger w-25">
+              清空購物車
+            </button>
           </div>
         </div>
         <div class="col-md-4">
@@ -275,6 +290,8 @@ watch(recommendProducts, async () => {
     </div>
   </div>
   <AppFooter />
+
+  <DeleteModal ref="deleteModalRef" title="清空購物車" content="確定要清空購物車嗎？" />
 </template>
 
 <style lang="scss" scoped></style>
